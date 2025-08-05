@@ -87,7 +87,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     setLoading(false);
     console.log("AuthContext: Loading complete");
-  }, [logout]);
+  }, []);
 
   const login = (
     newToken: string,

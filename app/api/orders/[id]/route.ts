@@ -84,7 +84,7 @@ export async function PATCH(
 
     const updatedOrder = await prisma.order.update({
       where: { id: orderId },
-      data: updateData,
+      data: updateData as any,
       include: {
         user: {
           select: {

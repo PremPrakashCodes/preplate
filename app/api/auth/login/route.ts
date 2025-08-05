@@ -69,7 +69,7 @@ export async function POST(request: Request) {
     console.log("Login - Generated token:", token.substring(0, 50) + "...");
 
     // Remove password from response
-    const { password: passwordField, ...accountWithoutPassword } = account;
+    const { password: _, ...accountWithoutPassword } = account;
 
     // Create response with token in cookie
     const response = NextResponse.json({

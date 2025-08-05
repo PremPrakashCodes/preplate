@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
     }
 
     const token = authHeader.substring(7);
-    const payload = verifyToken(token);
+    const payload = await verifyToken(token);
     if (!payload) {
       return NextResponse.json(
         { error: "Invalid token" },
@@ -91,7 +91,7 @@ export async function POST(request: NextRequest) {
     }
 
     const token = authHeader.substring(7);
-    const payload = verifyToken(token);
+    const payload = await verifyToken(token);
     if (!payload || payload.type !== "user") {
       return NextResponse.json(
         { error: "Unauthorized - User access required" },

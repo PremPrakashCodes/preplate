@@ -56,115 +56,96 @@ export default function Profile() {
     console.log("Profile: Restaurant:", restaurant);
     console.log("Profile: UserType:", userType);
     console.log("Profile: Token:", token ? "exists" : "none");
+  }, [loading, user, restaurant, userType, token]);
 
-      if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
-        <div className="flex items-center gap-3">
-          <div className="w-6 h-6 animate-spin rounded-full border-2 border-blue-600 border-t-transparent"></div>
-          <span className="text-lg text-gray-700">Loading...</span>
-        </div>
-      </div>
-    );
-  }
+  const fetchStats = async () => {
+    if (!token) return;
 
-  if (!user && !restaurant) {
-    console.log("Redirecting to auth - no user/restaurant found");
-    router.push("/auth");
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
-        <div className="text-lg">Redirecting...</div>
-      </div>
-    );
-  }
+    try {
+      setIsLoading(true);
+      setError(null);
 
-    const fetchStats = async () => {
-      if (!token) return;
+      if (userType === "user") {
+        // Fetch user statistics
+        const [ordersResponse, favoritesResponse] = await Promise.all([
+          fetch("/api/orders", {
+            headers: { Authorization: `Bearer ${token}` },
+          }),
+          fetch("/api/favorites", {
+            headers: { Authorization: `Bearer ${token}` },
+          }),
+        ]);
 
-      try {
-        setIsLoading(true);
-        setError(null);
+        if (ordersResponse.ok && favoritesResponse.ok) {
+          const ordersData = await ordersResponse.json();
+          const favoritesData = await favoritesResponse.json();
 
-        if (userType === "user") {
-          // Fetch user statistics
-          const [ordersResponse, favoritesResponse] = await Promise.all([
-            fetch("/api/orders", {
-              headers: { Authorization: `Bearer ${token}` },
-            }),
-            fetch("/api/favorites", {
-              headers: { Authorization: `Bearer ${token}` },
-            }),
-          ]);
+          const totalSpent = ordersData.orders.reduce(
+            (sum: number, order: { total: number }) => sum + order.total,
+            0
+          );
 
-          if (ordersResponse.ok && favoritesResponse.ok) {
-            const ordersData = await ordersResponse.json();
-            const favoritesData = await favoritesResponse.json();
+          const totalRating = ordersData.orders.reduce(
+            (sum: number, order: any) => {
+              // This would need to be calculated from reviews
+              return sum + (order.restaurant?.rating || 0);
+            },
+            0
+          );
 
-            const totalSpent = ordersData.orders.reduce(
-              (sum: number, order: { total: number }) => sum + order.total,
-              0
-            );
-
-            const totalRating = ordersData.orders.reduce(
-              (sum: number, order: { status: string }) => {
-                // This would need to be calculated from reviews
-                return sum + (order.restaurant.rating || 0);
-              },
-              0
-            );
-
-            setUserStats({
-              totalOrders: ordersData.orders.length,
-              totalSpent,
-              favoriteRestaurants: favoritesData.favorites?.length || 0,
-              averageRating: ordersData.orders.length > 0 ? totalRating / ordersData.orders.length : 0,
-            });
-          }
-        } else if (userType === "restaurant") {
-          // Fetch restaurant statistics
-          const [ordersResponse, reviewsResponse] = await Promise.all([
-            fetch("/api/orders", {
-              headers: { Authorization: `Bearer ${token}` },
-            }),
-            fetch("/api/restaurants/reviews", {
-              headers: { Authorization: `Bearer ${token}` },
-            }),
-          ]);
-
-          if (ordersResponse.ok) {
-            const ordersData = await ordersResponse.json();
-            const reviewsData = reviewsResponse.ok ? await reviewsResponse.json() : { reviews: [] };
-
-            const totalRevenue = ordersData.orders.reduce(
-              (sum: number, order: { subtotal: number }) => sum + (order.subtotal || 0),
-              0
-            );
-
-            const totalRating = reviewsData.reviews.reduce(
-              (sum: number, review: { rating: number }) => sum + review.rating,
-              0
-            );
-
-            setRestaurantStats({
-              totalOrders: ordersData.orders.length,
-              totalRevenue,
-              totalReviews: reviewsData.reviews.length,
-              averageRating: reviewsData.reviews.length > 0 ? totalRating / reviewsData.reviews.length : 0,
-            });
-          }
+          setUserStats({
+            totalOrders: ordersData.orders.length,
+            totalSpent,
+            favoriteRestaurants: favoritesData.favorites?.length || 0,
+            averageRating: ordersData.orders.length > 0 ? totalRating / ordersData.orders.length : 0,
+          });
         }
-      } catch (err) {
-        console.error("Error fetching stats:", err);
-        setError("Failed to load profile statistics");
-      } finally {
-        setIsLoading(false);
-      }
-    };
+      } else if (userType === "restaurant") {
+        // Fetch restaurant statistics
+        const [ordersResponse, reviewsResponse] = await Promise.all([
+          fetch("/api/orders", {
+            headers: { Authorization: `Bearer ${token}` },
+          }),
+          fetch("/api/restaurants/reviews", {
+            headers: { Authorization: `Bearer ${token}` },
+          }),
+        ]);
 
+        if (ordersResponse.ok) {
+          const ordersData = await ordersResponse.json();
+          const reviewsData = reviewsResponse.ok ? await reviewsResponse.json() : { reviews: [] };
+
+          const totalRevenue = ordersData.orders.reduce(
+            (sum: number, order: { subtotal: number }) => sum + (order.subtotal || 0),
+            0
+          );
+
+          const totalRating = reviewsData.reviews.reduce(
+            (sum: number, review: { rating: number }) => sum + review.rating,
+            0
+          );
+
+          setRestaurantStats({
+            totalOrders: ordersData.orders.length,
+            totalRevenue,
+            totalReviews: reviewsData.reviews.length,
+            averageRating: reviewsData.reviews.length > 0 ? totalRating / reviewsData.reviews.length : 0,
+          });
+        }
+      }
+    } catch (err) {
+      console.error("Error fetching stats:", err);
+      setError("Failed to load profile statistics");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
     if (token) {
       fetchStats();
     }
-  }, [loading, user, restaurant, router, token, userType]);
+  }, [token]);
 
   if (loading) {
     return (

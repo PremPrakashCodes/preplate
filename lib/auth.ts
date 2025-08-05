@@ -3,7 +3,7 @@ import * as jose from "jose";
 
 const JWT_SECRET = process.env.JWT_SECRET || "your-super-secret-jwt-key-for-preplate-app-2025";
 
-export interface AuthPayload {
+export interface AuthPayload extends jose.JWTPayload {
   id: string;
   email: string;
   role: "USER" | "RESTAURANT";
