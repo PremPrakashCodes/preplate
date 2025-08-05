@@ -1,0 +1,222 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum UserRole {
+  USER
+  RESTAURANT
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  PREPARING
+  READY
+  COMPLETED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String
+  role      UserRole @default(USER)
+  phone     String
+  address   String?
+  avatar    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relationships
+  orders    Order[]
+  favorites FavoriteRestaurant[]
+  reviews   Review[]
+
+  @@map("users")
+}
+
+model Restaurant {
+  id          String   @id @default(cuid())
+  email       String   @unique
+  password    String
+  name        String
+  description String?
+  phone       String
+  address     String?
+  cuisine     String?
+  rating      Float?   @default(0)
+  image       String?
+  isOpen      Boolean  @default(true)
+  featured    Boolean  @default(false)
+  estimatedTime String? // e.g., "30-45 min"
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Business hours
+  businessHours BusinessHour[]
+  
+  // Menu and orders
+  categories Category[]
+  orders     Order[]
+  reviews    Review[]
+  
+  // Favorites
+  favoritedBy FavoriteRestaurant[]
+
+  @@map("restaurants")
+}
+
+model Category {
+  id           String   @id @default(cuid())
+  name         String
+  description  String?
+  image        String?
+  sortOrder    Int      @default(0)
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Relationships
+  restaurantId String
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  menuItems    MenuItem[]
+
+  @@map("categories")
+}
+
+model MenuItem {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  price       Float
+  originalPrice Float?
+  discount    Int?     @default(0) // Percentage discount
+  image       String?
+  isAvailable Boolean  @default(true)
+  isFeatured  Boolean  @default(false)
+  sortOrder   Int      @default(0)
+  allergens   String[] // Array of allergen tags
+  nutrition   Json?    // Nutrition information
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relationships
+  categoryId  String
+  category    Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  orderItems  OrderItem[]
+
+  @@map("menu_items")
+}
+
+model Order {
+  id              String        @id @default(cuid())
+  orderNumber     String        @unique
+  status          OrderStatus   @default(PENDING)
+  paymentStatus   PaymentStatus @default(PENDING)
+  subtotal        Float
+  platformFee     Float
+  total           Float
+  bookingDateTime DateTime
+  guests          Int           @default(1)
+  specialRequests String?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  // Relationships
+  userId        String
+  user          User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  restaurantId  String
+  restaurant    Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  orderItems    OrderItem[]
+
+  @@map("orders")
+}
+
+model OrderItem {
+  id        String   @id @default(cuid())
+  quantity  Int
+  price     Float    // Price at time of order
+  discount  Int?     @default(0)
+  notes     String?
+  createdAt DateTime @default(now())
+
+  // Relationships
+  orderId     String
+  order       Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  menuItemId  String
+  menuItem    MenuItem @relation(fields: [menuItemId], references: [id])
+
+  @@map("order_items")
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  rating    Int      // 1-5 stars
+  comment   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relationships
+  userId       String
+  user         User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  restaurantId String
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  orderId      String?    // Optional link to specific order
+
+  @@unique([userId, restaurantId]) // One review per user per restaurant
+
+  @@map("reviews")
+}
+
+model FavoriteRestaurant {
+  id           String   @id @default(cuid())
+  createdAt    DateTime @default(now())
+
+  // Relationships
+  userId       String
+  user         User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  restaurantId String
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, restaurantId]) // One favorite per user per restaurant
+
+  @@map("favorite_restaurants")
+}
+
+model BusinessHour {
+  id        String   @id @default(cuid())
+  dayOfWeek Int      // 0 = Sunday, 1 = Monday, etc.
+  openTime  String   // Format: "09:00"
+  closeTime String   // Format: "22:00"
+  isOpen    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relationships
+  restaurantId String
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+
+  @@unique([restaurantId, dayOfWeek]) // One schedule per day per restaurant
+
+  @@map("business_hours")
+}
