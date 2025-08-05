@@ -1,341 +1,220 @@
-# Preplate - Food Ordering Platform
+# 🍽️ PrePlate - Restaurant Booking Platform
 
-A modern food ordering platform built with Next.js, featuring separate authentication for users and restaurants.
+A modern, full-stack restaurant booking platform built with Next.js 15, TypeScript, and PostgreSQL.
 
-## Tech Stack
+## 🚀 Features
 
-- **Frontend**: Next.js 15, React 19, TypeScript
-- **UI Components**: Shadcn/UI with Tailwind CSS
-- **Forms & Validation**: React Hook Form with Zod validation
+- **User & Restaurant Authentication** - Secure login/register for both users and restaurants
+- **Restaurant Discovery** - Browse restaurants with filters and search
+- **Menu Management** - Restaurants can manage their menus with categories and items
+- **Order System** - Users can place orders with booking times
+- **Order Status Updates** - Restaurants can update order status in real-time
+- **Review System** - Users can leave reviews and ratings
+- **Favorites** - Users can save favorite restaurants
+- **Responsive Design** - Works perfectly on all devices
+- **Modern UI** - Beautiful interface with Shadcn UI components
+
+## 🛠️ Tech Stack
+
+- **Frontend**: Next.js 15, React, TypeScript
+- **Styling**: Tailwind CSS, Shadcn UI
+- **Backend**: Next.js API Routes
 - **Database**: PostgreSQL with Prisma ORM
-- **Authentication**: JWT with bcryptjs
-- **Icons**: Lucide React
+- **Authentication**: JWT with HTTP-only cookies
+- **Deployment**: Vercel-ready
 
-## Features
+## 📋 User Credentials
 
-### Authentication System
+### 👥 User Accounts
+| Email | Password | Type |
+|-------|----------|------|
+| `john@example.com` | `user@password` | User |
+| `jane@example.com` | `user@password` | User |
 
-- **Dual Authentication**: Separate login/register for Users and Restaurants
-- **JWT-based Authentication**: Secure token-based auth system
-- **Password Hashing**: bcrypt for secure password storage
-- **Form Validation**: Comprehensive client-side validation with Zod schemas
-- **React Hook Form**: Performant forms with real-time validation
-- **Type Safety**: Full TypeScript integration with form schemas
+### 🏪 Restaurant Accounts
+| Email | Password | Restaurant Name | Cuisine |
+|-------|----------|-----------------|---------|
+| `bella@italia.com` | `restaurant@password` | Bella Italia | Italian |
+| `dragon@palace.com` | `restaurant@password` | Dragon Palace | Chinese |
+| `spice@garden.com` | `restaurant@password` | Spice Garden | Indian |
+| `burger@hub.com` | `restaurant@password` | Burger Hub | American |
+| `sushi@master.com` | `restaurant@password` | Sushi Master | Japanese |
+| `taco@fiesta.com` | `restaurant@password` | Taco Fiesta | Mexican |
 
-### User Features
+## 🚀 Quick Start
 
-- User registration and login with form validation
-- Profile management with required phone and optional address
-- Dashboard with order history and favorites
-- Restaurant browsing with cuisine filtering
-- **Complete Pre-booking System** for scheduling food orders with table reservations
-- Menu browsing and item selection with real-time pricing
-- Order customization with quantity controls and special requests
-- Booking details management (date, time, guests, dietary restrictions)
-- Order summary with total calculation and confirmation
-- Real-time form validation with error messages
+### Prerequisites
+- Node.js 18+ 
+- PostgreSQL database
+- npm or yarn
 
-### Restaurant Features
-
-- Restaurant registration and login with business-specific fields
-- Business profile with required phone, optional cuisine type, description, location
-- Restaurant dashboard with order management
-- Rating system
-- Enhanced form validation for business information
-- Restaurant listing visibility to customers
-- Menu display for customer browsing
-
-### Booking System Features
-
-- **Restaurant Selection**: Browse and select from available restaurants
-- **Menu Integration**: View restaurant menu with prices and descriptions
-- **Order Customization**: Add/remove items, adjust quantities in real-time
-- **Booking Details**: Schedule specific date, time, number of guests
-- **Special Requests**: Add dietary restrictions or preferences
-- **Order Summary**: Live total calculation and order review
-- **Confirmation Process**: Complete booking confirmation with all details
-- **Navigation Flow**: Seamless flow from restaurant browsing to booking completion
-
-### Home Page Features
-
-- **Guest View**: Modern restaurant discovery interface
-- **Authenticated View**: Direct restaurant browsing with personalized welcome message
-- **Restaurant Listings**: Comprehensive restaurant cards with ratings, cuisine, location, and contact info
-- **Cuisine Filtering**: Filter restaurants by cuisine type (Italian, Chinese, Indian, American, Japanese, Mexican)
-- **Pre-Booking System**: Schedule food orders for pickup or delivery
-- **Featured Restaurants**: Highlighted top-rated establishments
-- **Real-time Status**: Open/closed restaurant indicators
-- **Responsive Design**: Mobile-friendly restaurant browsing experience
-
-### Profile Management
-
-- **Dedicated Profile Page**: Separate page for user and restaurant account management
-- **User Profile**: Personal information, order statistics, favorites, account settings
-- **Restaurant Profile**: Business information, statistics, rating, restaurant management tools
-- **Navigation**: Easy access from home page header, back navigation to home
-- **Account Actions**: Profile editing, order history, payment methods, business settings
-
-### Validation Features
-
-- **Email Validation**: Proper email format checking with real-time feedback
-- **Password Requirements**: Minimum 6 characters, maximum 100 with instant validation
-- **Phone Validation**: Required international phone number format support
-- **Field Length Limits**: Appropriate limits for all text fields with character counting
-- **Optional Fields**: Proper handling of optional profile information (address, description, cuisine)
-- **Type Safety**: Full TypeScript integration with validation schemas
-- **Error Messages**: User-friendly, specific error messages for each validation rule
-- **Form State Management**: Efficient form state with React Hook Form
-- **Loading States**: Proper loading indicators during form submission
-
-## Getting Started
+### Installation
 
 1. **Clone the repository**
-
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/PremPrakashCodes/preplate.git
    cd preplate
    ```
 
 2. **Install dependencies**
-
    ```bash
    npm install
    ```
 
 3. **Set up environment variables**
-
-   - Copy `.env.example` to `.env`
-   - Update the database URLs and JWT secret
-
+   ```bash
+   cp .env.example .env.local
    ```
-   DATABASE_URL="your-postgresql-url"
-   DIRECT_URL="your-postgresql-direct-url"
-   JWT_SECRET="your-secret-key"
+   
+   Update `.env.local` with your database URL:
+   ```
+   DATABASE_URL="postgresql://username:password@localhost:5432/preplate"
+   JWT_SECRET="your-super-secret-jwt-key-for-preplate-app-2025"
    ```
 
 4. **Set up the database**
-
    ```bash
    npx prisma generate
    npx prisma db push
+   npx prisma db seed
    ```
 
-5. **Start the development server**
-
+5. **Run the development server**
    ```bash
    npm run dev
    ```
 
 6. **Open your browser**
-   Navigate to `http://localhost:3000`
+   Navigate to [http://localhost:3000](http://localhost:3000)
 
-## Authentication Usage
+## 🎯 How to Use
 
-### Accessing the Application
+### For Users:
+1. **Register/Login** using the user credentials above
+2. **Browse Restaurants** on the home page
+3. **View Restaurant Details** and menus
+4. **Add Items** to your order
+5. **Set Booking Time** and number of guests
+6. **Place Order** and track status
+7. **Leave Reviews** for restaurants you've visited
 
-- **Home Page (`/`)**: No authentication required - shows restaurant listings for guests and dashboard for authenticated users
-- **Protected Routes**: `/dashboard`, `/profile`, `/orders` - require authentication
-- **Auth Page (`/auth`)**: Redirects to home if already authenticated
+### For Restaurants:
+1. **Register/Login** using restaurant credentials above
+2. **View Orders** in the orders page
+3. **Update Order Status** (Pending → Confirmed → Preparing → Ready → Completed)
+4. **Manage Menu** items and categories
+5. **View Reviews** and ratings from customers
 
-### Guest Experience
+## 📁 Project Structure
 
-1. Visit the home page to browse available restaurants
-2. Filter restaurants by cuisine type using the filter buttons
-3. View restaurant details including ratings, cuisine, address, phone, and estimated delivery time
-4. Click "Pre-Book Now" to be redirected to the authentication page
-5. See featured restaurants and open/closed status indicators
+```
+preplate/
+├── app/                    # Next.js App Router
+│   ├── api/               # API Routes
+│   │   ├── auth/          # Authentication endpoints
+│   │   ├── orders/        # Order management
+│   │   └── restaurants/   # Restaurant data
+│   ├── auth/              # Login/Register pages
+│   ├── book/              # Restaurant booking
+│   ├── orders/            # Order history
+│   └── profile/           # User profiles
+├── components/            # Reusable UI components
+│   └── ui/               # Shadcn UI components
+├── lib/                   # Utility functions
+│   ├── auth.ts           # Authentication utilities
+│   ├── prisma.ts         # Database client
+│   └── validations/      # Form validations
+├── prisma/               # Database schema & migrations
+│   ├── schema.prisma     # Database schema
+│   └── seed.ts           # Sample data
+└── middleware.ts         # Authentication middleware
+```
 
-### User Registration/Login
-
-1. Visit `/auth` or click "Sign In" from the home page
-2. Select "User" tab
-3. For registration: Fill in name, email, password, phone (required), and optional address
-4. For login: Use email and password
-5. Upon success, you'll be redirected to the user dashboard with personalized content
-
-### Restaurant Registration/Login
-
-1. Visit `/auth` or click "Sign In" from the home page
-2. Select "Restaurant" tab
-3. For registration: Fill in restaurant details including:
-   - Restaurant name
-   - Email and password
-   - Phone number (required)
-   - Optional: address, cuisine type, description
-4. For login: Use email and password
-5. Upon success, you'll be redirected to the restaurant dashboard with management tools
-
-## API Endpoints
+## 🔧 API Endpoints
 
 ### Authentication
+- `POST /api/auth/login` - User/Restaurant login
+- `POST /api/auth/register` - User/Restaurant registration
+- `POST /api/auth/logout` - Logout
 
-- `POST /api/auth/register` - Register user or restaurant
-- `POST /api/auth/login` - Login user or restaurant
+### Restaurants
+- `GET /api/restaurants` - List restaurants with filters
+- `GET /api/restaurants/[id]` - Get restaurant details
+- `GET /api/restaurants/reviews` - Get restaurant reviews
 
-### Request/Response Format
+### Orders
+- `GET /api/orders` - Get user/restaurant orders
+- `POST /api/orders` - Create new order
+- `PATCH /api/orders/[id]` - Update order status
 
-#### Registration Request
+## 🎨 UI Components
 
-```json
-{
-  "email": "user@example.com",
-  "password": "password123",
-  "name": "John Doe",
-  "type": "user", // or "restaurant"
-  "phone": "+1234567890", // required
-  "address": "123 Main St", // optional
-  // For restaurants only:
-  "description": "Best pizza in town", // optional
-  "cuisine": "Italian" // optional
-}
-```
+The application uses Shadcn UI components for a consistent, modern design:
+- **Cards** - Restaurant listings and order summaries
+- **Forms** - Login, registration, and booking forms
+- **Dialogs** - Order confirmations and modals
+- **Date/Time Pickers** - Booking time selection
+- **Buttons** - Action buttons with loading states
 
-#### Login Request
+## 🗄️ Database Schema
 
-```json
-{
-  "email": "user@example.com",
-  "password": "password123",
-  "type": "user" // or "restaurant"
-}
-```
+### Core Models:
+- **User** - Customer accounts
+- **Restaurant** - Restaurant accounts and details
+- **Category** - Menu categories
+- **MenuItem** - Food items with images
+- **Order** - Customer orders with status tracking
+- **Review** - Customer reviews and ratings
+- **BusinessHour** - Restaurant operating hours
 
-#### Success Response
+## 🚀 Deployment
 
-```json
-{
-  "message": "Login successful",
-  "token": "jwt-token-here",
-  "account": {
-    "id": "user-id",
-    "email": "user@example.com",
-    "name": "John Doe"
-    // ... other fields
-  },
-  "type": "user"
-}
-```
+### Vercel (Recommended)
+1. Connect your GitHub repository to Vercel
+2. Add environment variables in Vercel dashboard
+3. Deploy automatically on push to main branch
 
-## Database Schema
+### Manual Deployment
+1. Build the application: `npm run build`
+2. Start production server: `npm start`
 
-### Users Table
+## 🔒 Security Features
 
-- `id`: Unique identifier
-- `email`: Email address (unique)
-- `password`: Hashed password
-- `name`: User's full name
-- `role`: USER (default)
-- `phone`: Phone number (required)
-- `address`: Address (optional)
-- `createdAt`, `updatedAt`: Timestamps
+- **JWT Authentication** with secure token storage
+- **HTTP-only Cookies** for server-side authentication
+- **Password Hashing** using SHA-256
+- **Input Validation** on all forms
+- **CORS Protection** for API routes
+- **Type Safety** with TypeScript
 
-### Restaurants Table
+## 🧪 Testing
 
-- `id`: Unique identifier
-- `email`: Email address (unique)
-- `password`: Hashed password
-- `name`: Restaurant name
-- `description`: Restaurant description (optional)
-- `phone`: Phone number (required)
-- `address`: Restaurant address (optional)
-- `cuisine`: Cuisine type (optional)
-- `rating`: Average rating (default: 0)
-- `createdAt`, `updatedAt`: Timestamps
+The application includes:
+- **TypeScript** for compile-time error checking
+- **ESLint** for code quality
+- **Prisma** for database type safety
+- **Form validation** with Zod schemas
 
-## Development Commands
-
-```bash
-# Start development server
-npm run dev
-
-# Build for production
-npm run build
-
-# Start production server
-npm start
-
-# Lint code
-npm run lint
-
-# Database commands
-npm run db:generate    # Generate Prisma client
-npm run db:push       # Push schema to database
-npm run db:migrate    # Run migrations
-npm run db:studio     # Open Prisma Studio
-```
-
-## Project Structure
-
-```
-app/
-├── api/auth/          # Authentication API routes
-│   ├── login/         # Login endpoint
-│   └── register/      # Registration endpoint
-├── auth/              # Auth page
-├── book/              # Restaurant booking system
-│   └── [restaurantId]/ # Dynamic booking page for specific restaurant
-│       └── page.tsx   # Pre-booking interface with menu and scheduling
-├── orders/            # Order management
-│   └── page.tsx       # Order history and tracking
-├── profile/           # User and restaurant profile management
-│   └── page.tsx       # Profile page with account settings
-├── globals.css        # Global styles
-├── layout.tsx         # Root layout with AuthProvider
-└── page.tsx           # Home page with restaurant browsing
-
-components/ui/         # Shadcn UI components
-├── button.tsx
-├── card.tsx
-├── input.tsx
-├── label.tsx
-└── tabs.tsx
-
-lib/
-├── auth.ts           # Authentication utilities
-├── auth-context.tsx  # Auth context provider
-├── prisma.ts         # Prisma client
-└── utils.ts          # Utility functions
-
-prisma/
-└── schema.prisma     # Database schema
-```
-
-## Security Features
-
-- Password hashing with bcrypt (12 rounds)
-- JWT tokens with 7-day expiration
-- Email validation
-- Password strength requirements (minimum 6 characters)
-- Duplicate email prevention across both user types
-- Input sanitization and validation
-
-## Route Protection
-
-### Public Routes
-
-- **Home (`/`)**: Accessible to everyone - shows restaurant listings for guests, restaurant browsing for authenticated users
-- **Auth (`/auth`)**: Registration and login pages
-
-### Protected Routes
-
-- **Profile (`/profile`)**: User/Restaurant profile management and account settings
-- **Dashboard (`/dashboard`)**: User/Restaurant specific dashboards (if implemented)
-- **Orders (`/orders`)**: Order history and management
-
-### Middleware Behavior
-
-- **Unauthenticated users**: Can access home and auth pages, redirected to `/auth` for protected routes
-- **Authenticated users**: Can access all routes, redirected to home if trying to access `/auth`
-- **Token validation**: JWT tokens are validated on every protected route access
-
-## Contributing
+## 🤝 Contributing
 
 1. Fork the repository
 2. Create a feature branch
 3. Make your changes
-4. Add tests if applicable
-5. Submit a pull request
+4. Submit a pull request
 
-## License
+## 📄 License
 
-MIT License
+This project is open source and available under the [MIT License](LICENSE).
+
+## 🙏 Acknowledgments
+
+- **Shadcn UI** for beautiful components
+- **Prisma** for excellent database tooling
+- **Next.js** for the amazing framework
+- **Tailwind CSS** for utility-first styling
+
+---
+
+**Built with ❤️ by [Prem Prakash](https://github.com/PremPrakashCodes)**
+
+For support or questions, please open an issue on GitHub.
